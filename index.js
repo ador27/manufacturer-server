@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const res = require('express/lib/response');
+const req = require('express/lib/request');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,7 +19,34 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         await client.connect();
-        console.log('database connected');
+        const toolCollection = client.db('affinity_electronics').collection('tools');
+        const reviewCollection = client.db('affinity_electronics').collection('reviews');
+
+
+        app.get('/tools', async (req, res) => {
+            const query = {};
+            const cursor = toolCollection.find(query);
+            const tools = await cursor.toArray();
+            res.send(tools);
+        })
+
+        app.get('/review', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
+        });
+
+
+        app.post('/review', async (req, res) => {
+            const newReview = req.body;
+            const result = await reviewCollection.insertOne(newReview);
+            res.send(result);
+
+        });
+
+
+
     }
     finally {
 
