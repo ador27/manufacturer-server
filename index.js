@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const res = require('express/lib/response');
@@ -21,6 +22,7 @@ async function run() {
         await client.connect();
         const toolCollection = client.db('affinity_electronics').collection('tools');
         const reviewCollection = client.db('affinity_electronics').collection('reviews');
+        const userCollection = client.db('affinity_electronics').collection('users');
 
 
         app.get('/tools', async (req, res) => {
@@ -36,6 +38,18 @@ async function run() {
             const review = await cursor.toArray();
             res.send(review);
         });
+
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
 
 
         app.post('/review', async (req, res) => {
