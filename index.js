@@ -5,6 +5,7 @@ require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const res = require('express/lib/response');
 const req = require('express/lib/request');
+const verify = require('jsonwebtoken/verify');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -38,6 +39,14 @@ async function run() {
             const review = await cursor.toArray();
             res.send(review);
         });
+
+
+        app.get('/user', async (req, res) => {
+            const users = await userCollection.find().toArray();
+            res.send(users);
+        });
+
+
 
         app.put('/user/:email', async (req, res) => {
             const email = req.params.email;
