@@ -94,6 +94,13 @@ async function run() {
 
         });
 
+        app.post('/tools', async (req, res) => {
+            const newTool = req.body;
+            const result = await toolCollection.insertOne(newTool);
+            res.send(result);
+
+        });
+
 
 
     }
