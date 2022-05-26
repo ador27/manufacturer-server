@@ -33,6 +33,13 @@ async function run() {
             res.send(tools);
         })
 
+        app.get('/tools/:_id', async (req, res) => {
+            const id = req.params.id;
+            const tool = await toolCollection.findOne({ id: id });
+            res.send(tool);
+        })
+
+
         app.get('/review', async (req, res) => {
             const query = {};
             const cursor = reviewCollection.find(query);
