@@ -48,6 +48,14 @@ async function run() {
         });
 
 
+        app.get('/user/:email', async (req, res) => {
+            const query = {};
+            const cursor = userCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+
         app.get('/user', async (req, res) => {
             const users = await userCollection.find().toArray();
             res.send(users);
